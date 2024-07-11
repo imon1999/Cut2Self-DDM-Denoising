@@ -13,7 +13,6 @@ from tqdm import trange
 from torch.autograd import Variable
 from partialconv2d import PartialConv2d
 from model import self2self
-```
 
 
 def image_loader(image, device, p1, p2):
@@ -90,9 +89,9 @@ if __name__ == "__main__":
             output = model(img_input_tensor, mask)
 
             if itr == 0:
-                slice_avg = output.clone()
+                slice_avg = loader(output)
             else:
-                slice_avg = slice_avg * 0.99 + output * 0.01
+                slice_avg = slice_avg * 0.99 + loader(output) * 0.01
 
             loss = torch.sum(abs(output - y) * (1 - mask)) / torch.sum(1 - mask)
             optimizer.zero_grad()
@@ -126,15 +125,15 @@ if __name__ == "__main__":
                     # calculate avg
                     average = np.squeeze(np.uint8(np.clip(np.average(img_array, axis=0), 0, 1) * 255))
                     base_filename = os.path.basename(image_list[z])
-                    filename_wo_ext = os.path.splitext(base_filename)[0]
-                    avg_path = os.path.join(folder_list[z], f"{filename_wo_ext}_avg_{itr + 1}.png")
+                    input_name = os.path.splitext(base_filename)[0]
+                    avg_path = os.path.join(folder_list[z], f"{input_name}_avg_{itr + 1}.png")
                     write_img = Image.fromarray(average)
                     write_img.save(avg_path)
 
                     # calculate median
-                    med = np.squeeze(np.uint8(np.clip(np.median(img_array, axis=0), 0, 1) * 255))
-                    med_path = os.path.join(folder_list[z], f"{filename_wo_ext}_med_{itr + 1}.png")
-                    write_img2 = Image.fromarray(med)
+                    median = np.squeeze(np.uint8(np.clip(np.median(img_array, axis=0), 0, 1) * 255))
+                    med_path = os.path.join(folder_list[z], f"{input_name}_med_{itr + 1}.png")
+                    write_img2 = Image.fromarray(median)
                     write_img2.save(med_path)
 
                 k = k + z
