@@ -18,15 +18,16 @@ from model import self2self
 
 def image_loader(image, device, p1, p2):
     """load image, returns cuda tensor"""
-    loader = T.Compose([T.RandomHorizontalFlip(torch.round(torch.tensor(p1))),
-                        T.RandomVerticalFlip(torch.round(torch.tensor(p2))),
+    # Fixed loader
+    loader = T.Compose([T.RandomHorizontalFlip(p1),
+                        T.RandomVerticalFlip(p2),
                         T.ToTensor()
                         ])
     image = Image.fromarray(image.astype(np.uint8))
-    image = loader(image).float()
-    image = torch.tensor(image)
-    image = image.unsqueeze(0)
-    return image.to(device)
+    # image = loader(image).float()
+    # image = torch.tensor(image)
+    image = image.unsqueeze(0).to(device)
+    return image
 
 
 if __name__ == "__main__":
@@ -81,7 +82,8 @@ if __name__ == "__main__":
             p1, p2 = np.random.rand(), np.random.rand()
             img_input_tensor = image_loader((img_input).astype(np.uint8), device, p1, p2)
             y = image_loader((y).astype(np.uint8), device, p1, p2)
-            mask = torch.Tensor(np.expand_dims(np.transpose(mask.cpu().numpy(), [2, 0, 1]), 0)).to(device, dtype=torch.float32)
+            mask = np.expand_dims(np.transpose(convrt, [2, 0, 1]), 0)
+            mask = torch.tensor(mask).to(device, dtype=torch.float32)
 
             model.train()
             img_input_tensor = img_input_tensor * mask
@@ -112,8 +114,8 @@ if __name__ == "__main__":
 
                     img_input = img * mask.cpu().numpy()
                     img_input_tensor = image_loader((img_input).astype(np.uint8), device, 0.1, 0.1)
-                    mask = torch.Tensor(np.expand_dims(np.transpose(mask.cpu().numpy(), [2, 0, 1]), 0)).to(device,
-                                                                                                           dtype=torch.float32)
+                    mask = np.expand_dims(np.transpose(convrt, [2, 0, 1]), 0)
+                    mask = torch.tensor(mask).to(device, dtype=torch.float32)
 
                     output_test = model(img_input_tensor, mask)
                     sum_preds[:, :, :] += np.transpose(output_test.detach().cpu().numpy(), [2, 3, 1, 0])[:, :, :, 0]
