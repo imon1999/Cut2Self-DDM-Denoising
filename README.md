@@ -26,7 +26,7 @@
 
 ---
 
-## 📦 Installation & Setup
+## Installation & Setup
 
 ### Step 1: Clone Repository
 
@@ -44,10 +44,15 @@ conda activate cut2self
 ```
 
 > **Note:** If you prefer not to use conda, you can skip directly to **Step 3**.
-
-
+> 
 ### Step 3: Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
+## Contact & Support
+
+If you have questions, suggestions, or need support, please feel free to reach out:
+
+- **GitHub Issues**: [Open an Issue](https://github.com/imon1999/Cut2Self-DDM-Denoising/issues)
+- **Email**: [imon52145@gmail.com](mailto:imon52145@gmail.com)
